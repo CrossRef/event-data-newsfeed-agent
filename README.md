@@ -1,36 +1,18 @@
-# event-data-newsfeed-agent
+# Crossref Event Data Newsfeed Service
 
-FIXME: description
+Agent to consume a collection of RSS and Atom newsfeeds.
 
-## Installation
+Development status: Under developemnt September 2016
 
-Download from http://example.com/FIXME.
+## Config
 
-## Usage
+Required:
 
-FIXME: explanation
-
-    $ java -jar event-data-newsfeed-agent-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2016 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+ - `:status-service-base`
+ - `:status-service-auth-token`
+ - `:evidence-service-auth-token`
+ - `:reverse-service-base`
+ - `:db-name`
+ - `:db-user`
+ - `:db-password`
+ - `:evidence-service-base`
