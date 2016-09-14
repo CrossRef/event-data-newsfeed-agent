@@ -14,5 +14,7 @@ Required:
  - `:reverse-service-base`
  - `:db-name`
  - `:db-user`
+ - `:db-host` MySQL hostname
+ - `:db-port` MySQL port as a string
  - `:db-password`
  - `:evidence-service-base`

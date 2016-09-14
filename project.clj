@@ -1,4 +1,4 @@
-(defproject event-data-newsfeed-agent "0.1.2"
+(defproject event-data-newsfeed-agent "0.1.3"
   :description "Crossref Event Data Newsfeed Agent"
   :url "http://eventdata.crossref.org"
   :license {:name "The MIT License (MIT)"

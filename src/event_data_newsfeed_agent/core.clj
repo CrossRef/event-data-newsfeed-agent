@@ -17,6 +17,8 @@
 (def version "0.1.2")
 
 (kdb/defdb db (kdb/mysql {:db (:db-name env)
+                          :host (:db-host env) 
+                          :port (Integer/parseInt (:db-port env))
                           :user (:db-user env)
                           :password (:db-password env)}))
 
