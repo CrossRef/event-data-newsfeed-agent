@@ -14,7 +14,7 @@
    (:gen-class))
 
 (def source-token "c1bfb47c-39b8-4224-bb18-96edf85e3f7b")
-(def version "0.1.1")
+(def version "0.1.2")
 
 (kdb/defdb db (kdb/mysql {:db (:db-name env)
                           :user (:db-user env)
