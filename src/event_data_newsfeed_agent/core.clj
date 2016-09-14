@@ -119,6 +119,7 @@
     (with-open [rdr (reader newsfeed-list-file)]
        (doseq [this-newsfeed-url (line-seq rdr)]
          (log/info "Check newsfeed url" this-newsfeed-url)
+         (c/send-heartbeat "newsfeed-agent/feed/fetch-feed" 1)
          ; Items are hashmaps of {:title, :link, :id, :updated, :summary, :feed-url, :fetch-date}.
          (let [blog-items (feeds/get-items this-newsfeed-url)
                evidence-record (evidence-record-from-blog-items blog-items newsfeed-list-url this-newsfeed-url domain-list-url domain-set)
@@ -129,6 +130,7 @@
           (when callback-result
             (doseq [blog-url (-> evidence-record :input :blog-urls-unseen)]
               (log/info "Marking seen URL" blog-url)
+              (c/send-heartbeat "newsfeed-agent/feed/analyze-item" 1)
               (k/insert seen-blog-urls (k/values {:blog_url blog-url
                                                   :feed_url this-newsfeed-url
                                                   :seen (coerce/to-sql-time (clj-time/now))}))))))))
