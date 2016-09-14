@@ -13,8 +13,8 @@
             [clj-time.core :as clj-time])
    (:gen-class))
 
-(def source-token  "c1bfb47c-39b8-4224-bb18-96edf85e3f7b")
-(def version "0.1.0")
+(def source-token "c1bfb47c-39b8-4224-bb18-96edf85e3f7b")
+(def version "0.1.1")
 
 (kdb/defdb db (kdb/mysql {:db (:db-name env)
                           :user (:db-user env)
@@ -74,6 +74,7 @@
                                   :action "added"
                                   :occurred_at (str (coerce/from-string (-> item :data :blog-item :updated)))
                                   :subj {:title (-> item :data :blog-item :title)
+                                         :issued (str (-> item :data :blog-item :updated))
                                          :pid blog-url
                                          :URL blog-url
                                          :type "post-weblog"}})
@@ -114,10 +115,7 @@
     (log/info "Got newsfeed-list artifact:" newsfeed-list-url)
     (log/info "Got domain-list artifact: " domain-list-url)
     (with-open [rdr (reader newsfeed-list-file)]
-       (doseq [this-newsfeed-url 
-               ; ["http://www.inoreader.com/stream/user/1005830516/tag/Ecology"]
-               (line-seq rdr)
-               ]
+       (doseq [this-newsfeed-url (line-seq rdr)]
          (log/info "Check newsfeed url" this-newsfeed-url)
          ; Items are hashmaps of {:title, :link, :id, :updated, :summary, :feed-url, :fetch-date}.
          (let [blog-items (feeds/get-items this-newsfeed-url)
