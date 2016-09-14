@@ -14,7 +14,7 @@
    (:gen-class))
 
 (def source-token "c1bfb47c-39b8-4224-bb18-96edf85e3f7b")
-(def version "0.1.2")
+(def version "0.1.6")
 
 (kdb/defdb db (kdb/mysql {:db (:db-name env)
                           :host (:db-host env) 
@@ -53,11 +53,13 @@
          ; Show working data per blog item.
          per-item (into {}
                     (map (fn [item]
+                     (c/send-heartbeat "newsfeed-agent/feed/analyze-item" 1)
                      (let [body (-> item :blog-item :summary)
                            link (-> item :blog-item :link)
                            ; this is a map of {candidate-url {:doi doi :version service-version}]}
                            url-doi-matches (agent-web/extract-dois-from-body-via-landing-page-urls domain-set body)
                            found-dois (keep #(-> % second :doi) url-doi-matches)]
+                       (c/send-heartbeat "newsfeed-agent/feed/found-item" (count url-doi-matches))
                             
                        [link
                         {:data item
@@ -130,7 +132,7 @@
           (when callback-result
             (doseq [blog-url (-> evidence-record :input :blog-urls-unseen)]
               (log/info "Marking seen URL" blog-url)
-              (c/send-heartbeat "newsfeed-agent/feed/analyze-item" 1)
+              
               (k/insert seen-blog-urls (k/values {:blog_url blog-url
                                                   :feed_url this-newsfeed-url
                                                   :seen (coerce/to-sql-time (clj-time/now))}))))))))
