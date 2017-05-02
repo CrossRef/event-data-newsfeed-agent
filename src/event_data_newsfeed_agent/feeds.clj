@@ -1,6 +1,6 @@
 (ns event-data-newsfeed-agent.feeds
   "Manage newsfeed feed list."
-  (:require [clojure.tools.logging :as l]
+  (:require [clojure.tools.logging :as log]
             [clojure.data.json :as json])
   (:require [clj-time.coerce :as clj-time-coerce]
             [clj-time.format :as clj-time-format]
@@ -69,9 +69,16 @@
 (defn get-items
   "Get list of parsed Actions from the feed url."
   [feed-url]
-  (l/info "Retrieve latest from feed:" feed-url)
+  (log/info "Retrieve latest from feed:" feed-url)
   (let [reader (new XmlReader (new URL feed-url))]
-    (actions-from-xml-reader feed-url reader)))
+    (try
+      (actions-from-xml-reader feed-url reader)
+      ; e.g. com.rometools.rome.io.ParsingFeedException
+      (catch Exception ex
+        (fn []
+          (log/info "Error parsing data from feed url:" feed-url)
+          (.printStackTrace ex)
+          [])))))
 
 (def get-items-throttled (throttle-fn get-items 20 :minute))
 
