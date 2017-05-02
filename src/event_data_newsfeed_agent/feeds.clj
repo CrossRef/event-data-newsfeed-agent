@@ -75,10 +75,9 @@
       (actions-from-xml-reader feed-url reader)
       ; e.g. com.rometools.rome.io.ParsingFeedException
       (catch Exception ex
-        (fn []
+        (do
           (log/info "Error parsing data from feed url:" feed-url)
-          (.printStackTrace ex)
-          [])))))
+          (.printStackTrace ex))))))
 
 (def get-items-throttled (throttle-fn get-items 20 :minute))
 
