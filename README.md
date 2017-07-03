@@ -12,8 +12,10 @@ Agent to consume a collection of RSS and Atom newsfeeds.
 
 Required:
 
- - `PERCOLATOR_URL_BASE` e.g. https://percolator.eventdata.crossref.org
- - `JWT_TOKEN`
- - `STATUS_SERVICE_BASE`
- - `ARTIFACT_BASE`, e.g. https://artifact.eventdata.crossref.org
- 
+Uses Event Data global configuration namespace.
+
+
+ - `NEWSFEED_JWT`
+ - `GLOBAL_ARTIFACT_URL_BASE`, e.g. https://artifact.eventdata.crossref.org
+ - `GLOBAL_KAFKA_BOOTSTRAP_SERVERS`
+ - `GLOBAL_STATUS_TOPIC`

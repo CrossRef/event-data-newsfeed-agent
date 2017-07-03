@@ -10,4 +10,4 @@ pom.xml.asc
 config
 .DS_Store
 .m2-cache
-
+docker-compose-demo.yml

@@ -3,9 +3,9 @@
             [event-data-common.status :as status]
             [clojure.tools.logging :as log]
             [clojure.java.io :as io]
+            [config.core :refer [env]]
             [event-data-newsfeed-agent.feeds :as feeds]
-            [clj-time.core :as clj-time]
-            [clojure.core.async :refer [>!!]])
+            [clj-time.core :as clj-time])
    (:gen-class))
 
 (def user-agent "CrossrefEventDataBot (eventdata@crossref.org) (by /u/crossref-bot labs@crossref.org)")
@@ -16,7 +16,7 @@
 
 (defn check-all-newsfeeds
   "Check all newsfeeds. "
-  [artifacts bundle-chan]
+  [artifacts callback]
   (log/info "Start crawl all newsfeeds at" (str (clj-time/now)))
   (let [[newsfeed-list-url newsfeed-list] (artifacts "newsfeed-list")
         ; Get the set of domains for this pass.
@@ -24,7 +24,7 @@
     (log/info "Got newsfeed-list artifact:" newsfeed-list-url)
       (doseq [this-newsfeed-url newsfeed-set]
        (log/info "Check newsfeed url" this-newsfeed-url)
-       (status/add! "newsfeed-agent" "process" "scan-newsfeeds" 1)
+       (status/send! "newsfeed-agent" "process" "scan-newsfeeds" 1)
        (let [actions (feeds/get-items-throttled this-newsfeed-url)
              package {:source-token source-token
                       :source-id "newsfeed"
@@ -32,13 +32,14 @@
                       :agent {:version version :artifacts {:newsfeed-list-artifact-version newsfeed-list-url}}
                       :pages [{:actions actions}]}]
       (log/info "Sending package...")
-      (>!! bundle-chan package)))
+      (callback package)))
       
     (log/info "Finished scan.")))
 
 (def agent-definition
   {:agent-name "newsfeed-agent"
    :version version
+   :jwt (:newsfeed-jwt env)
    :schedule [{:name "check-all-newsfeeds"
                :seconds 1800 ; 30 minutes
                :fun check-all-newsfeeds
